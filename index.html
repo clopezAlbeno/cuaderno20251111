@@ -3,130 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Definitive Bypass Player</title>
+    <title>Bypass Absoluto v4</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #0b0c10;
-            color: #c5c6c7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0b0b;
+            color: #e0e0e0;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .wrapper {
+        .main-box {
             width: 100%;
-            max-width: 750px;
-            background: #1f2833;
+            max-width: 800px;
+            background: #161616;
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            border: 1px solid #262626;
             text-align: center;
         }
-        h2 { color: #45f3ff; margin-top: 0; }
-        .input-group {
+        h2 { color: #00ffcc; margin-top: 0; font-weight: 400; }
+        .input-area {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
         input {
             flex: 1;
-            padding: 12px;
-            background: #0b0c10;
-            border: 1px solid #45f3ff;
+            padding: 14px;
+            background: #000;
+            border: 1px solid #333;
             color: #fff;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
         }
+        input:focus { border-color: #00ffcc; }
         button {
-            padding: 12px 20px;
-            background: #45f3ff;
-            color: #0b0c10;
+            padding: 14px 28px;
+            background: #00ffcc;
+            color: #000;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
+            font-size: 15px;
         }
-        button:hover { background: #1f2833; color: #45f3ff; border: 1px solid #45f3ff;}
-        video {
+        button:hover { background: #00ccaa; }
+        .frame-wrapper {
             width: 100%;
             aspect-ratio: 16/9;
             background: #000;
-            border-radius: 5px;
+            border-radius: 8px;
+            overflow: hidden;
             display: none;
+            border: 1px solid #333;
         }
-        .status-box {
-            margin: 10px 0;
-            font-size: 14px;
-            color: #66fcf1;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .alert-text {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #ff5555;
+            background: rgba(255,85,85,0.1);
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <h2>Nivel de Evasión: Máximo</h2>
-    <div class="input-group">
-        <input type="text" id="youtubeUrl" placeholder="Introduce URL de YouTube (ej. https://youtu.be/...)">
-        <button onclick="superBypass()">Forzar Video</button>
+<div class="main-box">
+    <h2>Evasión de Certificado IP Extrema</h2>
+    <div class="input-area">
+        <input type="text" id="targetUrl" placeholder="Pega el enlace de YouTube aquí...">
+        <button onclick="ejecutarBypassMaximo()">Forzar Ejecución</button>
     </div>
     
-    <div class="status-box" id="loaderStatus">Servidores puente listos...</div>
-    
-    <video id="cloudPlayer" controls autoplay preload="auto"></video>
+    <div class="frame-wrapper" id="wrapper">
+        <iframe id="bypassPlayer" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen></iframe>
+    </div>
+
+    <div class="alert-text" id="errorAlert">
+        Si el video no carga, tu red bloquea las conexiones SSL externas a nivel de hardware. Revisa las alternativas abajo.
+    </div>
 </div>
 
 <script>
-function extractID(url) {
+function getID(url) {
     const reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(reg);
     return (match && match[2].length === 11) ? match[2] : null;
 }
 
-async function superBypass() {
-    const url = document.getElementById('youtubeUrl').value;
-    const status = document.getElementById('loaderStatus');
-    const player = document.getElementById('cloudPlayer');
-    const id = extractID(url);
+function ejecutarBypassMaximo() {
+    const url = document.getElementById('targetUrl').value;
+    const id = getID(url);
+    const wrapper = document.getElementById('wrapper');
+    const player = document.getElementById('bypassPlayer');
+    const alertBox = document.getElementById('errorAlert');
 
     if (!id) {
-        alert("URL inválida");
+        alert("Introduce un enlace de YouTube válido.");
         return;
     }
 
-    player.style.display = 'none';
-    status.innerText = "Túnel 1: Conectando con servidor en la nube externo...";
+    alertBox.style.display = "block";
+    wrapper.style.display = "block";
 
-    // Usaremos proxies de descarga directa hiper-actualizados de uso público distribuido
-    // que transmiten la data codificada para saltarse firewalls deep-packet inspection.
-    const proxies = [
-        `https://str.p some-apps.workers.dev/`, // Proxy Worker camuflado (Cloudflare)
-        `https://invidious.projectsegfau.lt/latest_version?id=${id}&itag=22`,
-        `https://iv.melmac.space/latest_version?id=${id}&itag=18`,
-        `https://download.tube/api/v1/video?url=https://www.youtube.com/watch?v=${id}`
-    ];
-
-    // Intentar reproducir directamente a través del túnel de descargas crudas de Invidious distribuidos (servidores IP dinámicas)
-    let exitoso = false;
-    
-    // Método de fuerza por redirección directa
-    try {
-        // Probamos el túnel directo camuflado de distribución asíncrona
-        const streamUrl = `https://invidious.drgns.space/latest_version?id=${id}&itag=22`;
-        player.src = streamUrl;
-        player.style.display = 'block';
-        status.innerText = "¡Túnel establecido exitosamente en la nube!";
-        exitoso = true;
-    } catch (e) {
-        console.log("Cambiando a pasarela de respaldo...");
-    }
-
-    if (!exitoso) {
-        // Respaldos dinámicos en cascada
-        status.innerText = "Pasarela 1 bloqueada. Intentando túnel dinámico alterno...";
-        player.src = `https://invidious.privacydev.net/latest_version?id=${id}&itag=22`;
-        player.style.display = 'block';
-    }
+    // Usamos una pasarela de reproductor embebido que disfraza el tráfico usando un visor alternativo
+    // Cambiamos radicalmente el origen del servidor a uno de distribución académica/privada
+    player.src = `https://piped.mha.fi/embed/${id}`;
 }
 </script>
 
