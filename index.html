@@ -3,150 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamPlayer - Antibaipás</title>
+    <title>Bypass Absoluto YouTube</title>
     <style>
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #0f0f0f;
-            color: #f1f1f1;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        h1 {
-            color: #ff4444;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-        .controls {
+        .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
+            background: #111;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            border: 1px solid #222;
+        }
+        h2 { color: #ff3333; margin-top: 0; text-align: center; }
+        .input-box {
             display: flex;
-            flex-direction: column;
             gap: 10px;
-            background: #1f1f1f;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             margin-bottom: 20px;
         }
-        .row {
-            display: flex;
-            gap: 10px;
-        }
-        input[type="text"] {
+        input {
             flex: 1;
             padding: 12px;
+            background: #222;
             border: 1px solid #333;
-            border-radius: 4px;
-            background-color: #2b2b2b;
             color: white;
+            border-radius: 6px;
             font-size: 15px;
-        }
-        select {
-            padding: 12px;
-            background: #2b2b2b;
-            color: white;
-            border: 1px solid #333;
-            border-radius: 4px;
-            cursor: pointer;
         }
         button {
-            padding: 12px 25px;
-            background-color: #ff4444;
+            padding: 12px 24px;
+            background: #ff3333;
             color: white;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 15px;
-            transition: 0.2s;
+            cursor: pointer;
         }
-        button:hover {
-            background-color: #cc2222;
-        }
-        .video-container {
+        button:hover { background: #cc2222; }
+        video {
             width: 100%;
-            max-width: 850px;
-            aspect-ratio: 16 / 9;
-            background-color: #000;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 6px;
             display: none;
-            border: 1px solid #333;
+            margin-top: 15px;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <h1>StreamPlayer Pro</h1>
-    <div class="subtitle">Bypassing Firewalls (Invidious / Piped / Cobalt)</div>
+<div class="container">
+    <h2>Ultra Bypass Player</h2>
+    <div class="input-box">
+        <input type="text" id="ytUrl" placeholder="Pega el enlace de YouTube aquí...">
+        <button onclick="fuerzaBrutaBypass()">Cargar Video</button>
+    </div>
     
-    <div class="controls">
-        <div class="row">
-            <input type="text" id="videoUrl" placeholder="Pega el enlace de YouTube aquí...">
-        </div>
-        <div class="row">
-            <select id="bypassMethod">
-                <option value="invidious_1">Método 1: Servidor Proxy Invidious (Recomendado)</option>
-                <option value="invidious_2">Método 2: Servidor Alternativo (Yewtu.be)</option>
-                <option value="piped">Método 3: Servidor Piped (Privado)</option>
-            </select>
-            <button onclick="loadBypassVideo()">Desbloquear y Ver</button>
-        </div>
-    </div>
+    <div class="status" id="statusLabel">Listo para procesar tráfico oculto...</div>
+    
+    <video id="nativePlayer" controls autoplay></video>
+</div>
 
-    <div class="video-container" id="playerContainer">
-        <iframe id="videoPlayer" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-    </div>
+<script>
+async function fuerzaBrutaBypass() {
+    const url = document.getElementById('ytUrl').value;
+    const statusLabel = document.getElementById('statusLabel');
+    const player = document.getElementById('nativePlayer');
+    
+    // Extractor de ID
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    const videoId = (match && match[2].length === 11) ? match[2] : null;
 
-    <script>
-        function extractVideoId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
+    if (!videoId) {
+        alert("Enlace no válido");
+        return;
+    }
 
-        function loadBypassVideo() {
-            const urlInput = document.getElementById('videoUrl').value;
-            const method = document.getElementById('bypassMethod').value;
-            const videoId = extractVideoId(urlInput);
-            
-            const playerContainer = document.getElementById('playerContainer');
-            const videoPlayer = document.getElementById('videoPlayer');
+    statusLabel.innerText = "Evadiendo firewall e interceptando flujos de datos...";
+    player.style.display = 'none';
 
-            if (!videoId) {
-                alert('Por favor, introduce un enlace válido de YouTube.');
-                return;
+    // Lista de APIs públicas que extraen el archivo de video plano (.mp4) de YouTube desde servidores limpios
+    const apiEndpoints = [
+        `https://api.cobalt.tools/api/json`,
+        `https://co.wuk.sh/api/json`
+    ];
+
+    let videoStreamUrl = null;
+
+    // Intentamos extraer el stream nativo simulando una petición de backend
+    for (let api of apiEndpoints) {
+        try {
+            const response = await fetch(api, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    url: `https://www.youtube.com/watch?v=${videoId}`,
+                    videoQuality: '720', 
+                    audioFormat: 'mp3',
+                    isAudioOnly: false
+                })
+            });
+
+            const data = await response.json();
+            if (data && data.url) {
+                videoStreamUrl = data.url;
+                break;
             }
-
-            let embedUrl = "";
-
-            // Diferentes proxies que el firewall no tiene en su lista negra de YouTube
-            if (method === "invidious_1") {
-                embedUrl = `https://invidious.perennialte.ch/embed/${videoId}?autoplay=1`;
-            } else if (method === "invidious_2") {
-                embedUrl = `https://yewtu.be/embed/${videoId}?autoplay=1`;
-            } else if (method === "piped") {
-                embedUrl = `https://piped.video/embed/${videoId}`;
-            }
-
-            // Forzar la carga en el iframe limpiando el tráfico hacia Google
-            videoPlayer.src = embedUrl;
-            playerContainer.style.display = 'block';
+        } catch (e) {
+            console.log("Intentando bypass alternativo...");
         }
-    </script>
+    }
+
+    if (videoStreamUrl) {
+        statusLabel.innerText = "¡Conexión establecida con éxito! Reproduciendo...";
+        player.src = videoStreamUrl;
+        player.style.display = 'block';
+    } else {
+        // Plan C: Si las APIs principales fallan, forzamos un proxy open-source crudo
+        statusLabel.innerText = "Aplicando enrutamiento secundario...";
+        try {
+            const fallbackUrl = `https://invidious.asir.dev/latest_version?id=${videoId}&itag=22`;
+            player.src = fallbackUrl;
+            player.style.display = 'block';
+            statusLabel.innerText = "Reproduciendo vía túnel asíncrono.";
+        } catch(err) {
+            statusLabel.innerText = "Error crítico: El Firewall bloquea las peticiones de datos HTTP salientes.";
+            alert("El firewall es demasiado estricto. Si esto falla, la única opción es usar una VPN en el navegador (como Opera) o usar Web Proxies externos como 'CroxyProxy'.");
+        }
+    }
+}
+</script>
+
 </body>
 </html>
