@@ -3,94 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Evasión por Apertura Limpia</title>
+    <title>Bypass de Red Forzado</title>
     <style>
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #0b0c10;
+            font-family: system-ui, sans-serif;
+            background-color: #0d0f12;
             color: #fff;
             margin: 0;
-            padding: 40px 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .box {
+        .container {
             width: 100%;
-            max-width: 600px;
-            background: #1f2833;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            border: 1px solid #45f3ff;
+            max-width: 750px;
+            background: #1a1d24;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             text-align: center;
         }
-        h2 { color: #45f3ff; margin-top: 0; font-size: 22px; }
-        p { color: #c5c6c7; font-size: 14px; line-height: 1.6; }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin: 25px 0;
-        }
         input {
-            flex: 1;
-            padding: 14px;
-            background: #0b0c10;
-            border: 1px solid #45f3ff;
+            width: 70%;
+            padding: 12px;
+            background: #0d0f12;
+            border: 1px solid #3b82f6;
             color: white;
-            border-radius: 6px;
-            font-size: 15px;
+            border-radius: 4px;
         }
         button {
-            padding: 14px 24px;
-            background: #45f3ff;
-            color: #0b0c10;
+            padding: 12px 20px;
+            background: #3b82f6;
+            color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 15px;
         }
-        button:hover { background: #66fcf1; }
+        button:hover { background: #2563eb; }
+        .player-box {
+            margin-top: 20px;
+            width: 100%;
+            aspect-ratio: 16/9;
+            display: none;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>Extractor de Video por Pestaña Aislar</h2>
-    <p>Al presionar el botón, el sistema limpiará el rastreo del Firewall Fortinet y forzará la apertura del video en una pestaña independiente usando un servidor espejo internacional libre de restricciones.</p>
+<div class="container">
+    <h2>Extractor de Flujo Aislado</h2>
+    <input type="text" id="videoUrl" placeholder="Pega el enlace de YouTube aquí...">
+    <button onclick="renderVideo()">Cargar Canales</button>
     
-    <div class="input-group">
-        <input type="text" id="youtubeLink" placeholder="Pega el enlace de YouTube aquí...">
-        <button onclick="abrirPestañaLimpia()">Abrir Video Ya</button>
+    <div class="player-box" id="pBox">
+        <iframe id="secureFrame" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen></iframe>
     </div>
 </div>
 
 <script>
-function extraerIdVideo(url) {
+function renderVideo() {
+    const url = document.getElementById('videoUrl').value;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-}
-
-function abrirPestañaLimpia() {
-    const url = document.getElementById('youtubeLink').value;
-    const id = extraerIdVideo(url);
+    const id = (match && match[2].length === 11) ? match[2] : null;
 
     if (!id) {
-        alert("Introduce un enlace válido.");
+        alert("Enlace inválido");
         return;
     }
 
-    // Usamos la pasarela de Invidious que no está bloqueada por IP y le borramos las cabeceras de origen corporativo
-    const urlEspejo = `https://invidious.nerdvpn.de/watch?v=${id}`;
-
-    // Creamos un disparador nativo en el navegador que elude el bloqueo de Fortinet abriendo una instancia aislada
-    const win = window.open();
-    win.opener = null;
-    win.rel = "noreferrer";
-    win.location = urlEspejo;
+    document.getElementById('pBox').style.display = 'block';
+    
+    // Forzamos el endpoint embebido puro de Google que a menudo las excepciones de firewall corporativas dejan pasar para Teams/Zoom
+    document.getElementById('secureFrame').src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
 }
 </script>
 
